@@ -25,7 +25,7 @@ public class InMemoryProductRepository implements ProductRepository {
     @Override
     public List<Product> findByName(String name) {
         return products.values().stream()
-                .filter(p -> p.getAd() != null && p.getAd().toLowerCase().contains(name.toLowerCase()))
+                .filter(p -> p.getName() != null && p.getName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
     }
 }

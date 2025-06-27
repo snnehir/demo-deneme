@@ -2,15 +2,15 @@ package com.my.demo.domain;
 
 public class Product {
     private Long id;
-    private String ad;
+    private String name;
     private Double price;
     private java.time.LocalDateTime created;
 
     public Product() {}
 
-    public Product(Long id, String ad, Double price, java.time.LocalDateTime created) {
+    public Product(Long id, String name, Double price, java.time.LocalDateTime created) {
         this.id = id;
-        this.ad = ad;
+        this.name = name;
         this.price = price;
         this.created = created;
     }
@@ -18,8 +18,8 @@ public class Product {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getAd() { return ad; }
-    public void setAd(String ad) { this.ad = ad; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }

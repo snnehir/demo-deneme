@@ -6,6 +6,6 @@ import java.util.List;
 public class ProductControllerAssertions {
     public static void assertProductResponse(List<ProductResponseDTO> response, int expectedSize, String expectedName) {
         Assertions.assertThat(response).hasSize(expectedSize);
-        Assertions.assertThat(response.get(0).getAd()).isEqualTo(expectedName);
+        Assertions.assertThat(response.get(0).getName()).isEqualTo(expectedName);
     }
 }

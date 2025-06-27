@@ -24,7 +24,7 @@ public class ProductController {
     public List<ProductResponseDTO> findProductByName(@RequestParam String name) {
         List<Product> products = findProductUseCase.findByName(name);
         return products.stream()
-                .map(p -> new ProductResponseDTO(p.getId(), p.getAd(), p.getPrice()))
+                .map(p -> new ProductResponseDTO(p.getId(), p.getName(), p.getPrice()))
                 .collect(Collectors.toList());
     }
 }

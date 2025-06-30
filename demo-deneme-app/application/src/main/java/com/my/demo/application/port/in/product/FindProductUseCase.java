@@ -5,5 +5,8 @@ import java.util.List;
 import com.my.demo.domain.Product;
 
 public interface FindProductUseCase {
-    List<Product> findByName(String name);
+    /**
+     * name null veya boş ise tüm ürünleri, dolu ise isme göre filtreli ürünleri döndürür.
+     */
+    List<Product> findProducts(String name);
 }

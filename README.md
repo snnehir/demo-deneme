@@ -7,9 +7,44 @@ Demo Deneme App, ürün (Product) yönetimi için geliştirilmiş, Spring Boot v
 ### Varlıklar
 - **Product**: Ürünleri temsil eden ana domain nesnesidir. Alanları: `id`, `name`, `price`, `created`.
 
+
+
 ### Endpointler
-- `GET /products?name=...` : Belirli bir isimle eşleşen ürünleri listeler.
+- `GET /products?name=...` : Belirli bir isimle eşleşen veya tüm ürünleri listeler.
+- `POST /products` : Yeni ürün ekler.
 - `GET /` : Basit bir mesaj döner (sağlık kontrolü için).
+
+
+#### Postman Örnekleri
+
+Tüm ürünleri listele:
+```
+GET http://localhost:8013/products
+```
+
+İsme göre ürünleri listele:
+```
+GET http://localhost:8013/products?name=elma
+```
+
+Ürün ekle:
+```
+POST http://localhost:8013/products
+Content-Type: application/json
+{
+  "name": "Karpuz",
+  "price": 25.0
+}
+```
+
+Örnek response:
+```
+{
+  "id": 6,
+  "name": "Karpuz",
+  "price": 25.0
+}
+```
 
 ## Hexagonal (Clean) Architecture ve Modüller
 Proje, hexagonal mimariyi uygular ve 4 ana modülden oluşur:
@@ -60,35 +95,54 @@ Projeyi sıfırdan oluşturmak için aşağıdaki adımlar izlenmiştir:
 
 Her modülün kendi `pom.xml` dosyası vardır ve ana proje (`demo-deneme-app/pom.xml`) bu modülleri `<modules>` etiketiyle yönetir.
 
+
 ## Projeyi Çalıştırma
 
-1. **Gereksinimler**
-   - Java 21
-   - Maven 3.9+
+### Gereksinimler
+- Java 21
+- Maven 3.9+
+
+### Konfigürasyon Dosyaları
+
+- `bootstrap/src/main/resources/application.properties` : Varsayılan (in-memory) konfigürasyon. Uygulama bu dosya ile başlar ve veriler bellekte tutulur.
+- `bootstrap/src/main/resources/application-postgresql.properties` : PostgreSQL ile çalışmak için gerekli ayarlar. Bu profil seçildiğinde uygulama verileri gerçek bir PostgreSQL veritabanında saklar.
 
 
+### PostgreSQL ile Çalışmak
 
-2. **Projeyi Derleme ve Çalıştırma**
+Öncelikle PostgreSQL veritabanını Docker ile başlatın:
 
-> Not: Çok modüllü projede kök dizinden doğrudan `spring-boot:run` çalışmaz, aşağıdaki komutu kullanmalısınız:
+```
+docker run --name demo-db -e POSTGRES_DB=demo-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=Aa123456 -p 5432:5432 -d postgres:16
+```
+
+> Not: Port çakışması olursa `-p 5433:5432` gibi farklı bir port kullanabilirsiniz.
+
+### Projeyi Derleme ve Çalıştırma
 
 Tüm platformlar için (proje ana dizininde):
-```sh
+```
 ./mvnw clean install
-./mvnw -pl bootstrap spring-boot:run
+./mvnw -pl bootstrap spring-boot:run -D"spring-boot.run.profiles"=postgresql
 ```
 
 Windows için:
-```bat
+```
 mvnw.cmd clean install
-mvnw.cmd -pl bootstrap spring-boot:run
+mvnw.cmd -pl bootstrap spring-boot:run -D"spring-boot.run.profiles"=postgresql
 ```
 
-3. **API'yi Test Etme**
+#### Profil Parametresi Açıklaması
+
+- `-D"spring-boot.run.profiles"=postgresql` : Uygulamanın `application-postgresql.properties` dosyasını ve PostgreSQL repository'lerini kullanmasını sağlar. Profil belirtilmezse uygulama in-memory (bellek içi) repository ile çalışır.
+
+### API'yi Test Etme
 - `GET http://localhost:8013/products?name=...` ile ürün sorgulayabilirsiniz.
+- `POST http://localhost:8013/products` ile ürün ekleyebilirsiniz.
 - `GET http://localhost:8013/` ile "Hi Hello!" mesajı alabilirsiniz.
 
 ## Notlar
 - Her modül bağımsız olarak geliştirilebilir ve test edilebilir.
 - Hexagonal mimari sayesinde bağımlılıklar gevşek tutulmuştur.
 - Proje, yeni varlıklar ve endpointler eklemek için kolayca genişletilebilir.
+- Kodda iş kuralları domain/application katmanında, mapping işlemleri ise merkezi Mapper sınıflarında yönetilir.

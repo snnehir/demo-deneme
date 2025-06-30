@@ -6,4 +6,6 @@ import com.my.demo.domain.Product;
 
 public interface ProductRepository {
     List<Product> findByName(String name);
+    List<Product> findAll();
+    Product save(Product product);
 }
